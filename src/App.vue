@@ -1,30 +1,42 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <TheNavbar />
+  <div id="feed" class="py-4">
+    <router-view />
   </div>
-  <router-view />
+  <TheBottomNavbar />
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import TheNavbar from "@/components/UI/TheNavbar.vue";
+import TheBottomNavbar from "@/components/UI/TheBottomNavbar.vue";
+import axios from 'axios'
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  components: {
+    TheNavbar,
+    TheBottomNavbar,
+  },
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
+    },
+  },
+  beforeCreate() {
+    const token = this.$store.state.token
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = "Token " + token
+    } else {
+      axios.defaults.headers.common['Authorization'] = ""
     }
+
+    this.$store.commit('autoLogin')
   }
+};
+</script>
+
+<style scoped>
+#feed {
+  max-width: 1100px;
+  margin: 0 auto;
 }
 </style>
