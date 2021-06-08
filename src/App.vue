@@ -16,21 +16,21 @@ export default {
     TheNavbar,
     TheBottomNavbar,
   },
-  computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
-  },
-  beforeCreate() {
-    const token = this.$store.state.token
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = "Token " + token
+  async beforeCreate() {
+    this.$store.commit('autoLogin')
+    if (this.$store.getters.isAuthenticated) {
+      axios.defaults.headers.common['Authorization'] = "Token " + this.$store.getters.token
+
+      await axios
+        .get("api/v1/users/me/")
+        .then((res) => {
+          this.$store.commit("setUsername", res.data.username);
+        })
+        .catch((error) => console.error(error));
     } else {
       axios.defaults.headers.common['Authorization'] = ""
     }
-
-    this.$store.commit('autoLogin')
-  }
+  },
 };
 </script>
 

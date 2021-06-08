@@ -7,7 +7,7 @@
 
       <form @submit.prevent="" class="flex items-center rounded overflow-hidden">
         <input type="text" class="p-1 text-gray-700 w-32 h-6 md:h-auto md:w-64" />
-        <button class="bg-primary p-1" id="searchBtn">
+        <button class="bg-primary hover:bg-primary-dark p-1" id="searchBtn">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -32,7 +32,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
           <a href="" @click.prevent="logout" class="hover:text-white transition-all ease delay-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 h-6 w-6 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           </a>
@@ -49,7 +49,7 @@
                 transition-all
                 ease
                 delay-100
-              ">Jim Morrison</span>
+              ">{{ getUsername }}</span>
             <span class="block text-gray-400 text-xs">Ver perfil</span>
           </div>
         </a>
@@ -61,19 +61,27 @@
 <script>
 export default {
   name: "TheNavbar",
-
+  data() {
+    return {
+      username: "",
+    };
+  },
+  mounted() {},
   computed: {
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
     },
+    getUsername() {
+      return this.$store.getters.username;
+    },
   },
   methods: {
     logout() {
-      this.$store.commit('logout')
-      localStorage.removeItem('token')
-      this.$router.push('/')
-    }
-  }
+      this.$store.commit("logout");
+      localStorage.removeItem("token");
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 

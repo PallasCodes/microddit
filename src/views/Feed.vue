@@ -1,6 +1,7 @@
 <template>
   <div id="feed" class="flex gap-4">
-    <main>
+    <main class="w-full">
+      <MakePost v-if="isAuthenticated" @post-created="addPost" />
       <Post v-for="post in posts" :key="post.id" :post="post" />
     </main>
     <div class="hidden md:block sticky top-16" id="side">
@@ -14,6 +15,7 @@
 import Post from "@/components/Post.vue";
 import TheTopCommunities from "@/components/UI/TheTopCommunities.vue";
 import TheFooter from "@/components/UI/TheFooter.vue";
+import MakePost from "@/components/MakePost.vue";
 import axios from 'axios'
 
 export default {
@@ -21,6 +23,7 @@ export default {
     Post,
     TheTopCommunities,
     TheFooter,
+    MakePost
   },
   data() {
     return {
@@ -37,6 +40,14 @@ export default {
       await axios('/api/v1/public-feed/')
         .then(res => this.posts = res.data)
         .catch(error => console.error(error))
+    },
+    addPost(post) {
+      this.posts.unshift(post)
+    },
+  },
+  computed: {
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated
     }
   }
 };

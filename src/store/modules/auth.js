@@ -6,6 +6,9 @@ const state = () => {
 const getters = {
     isAuthenticated: (state) => {
         return state.isAuthenticated;
+    },
+    token(state) {
+        return state.token
     }
 };
 
@@ -29,6 +32,9 @@ const mutations = {
             state.isAuthenticated = false
         }
     },
+    setUsername: (state, username) => {
+        state.username = username
+    }
 };
 
 export default {

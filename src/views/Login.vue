@@ -22,12 +22,12 @@
 import axios from "axios";
 
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
       username: "",
       password: "",
-    }
+    };
   },
   methods: {
     async login() {
@@ -44,13 +44,21 @@ export default {
         .then((res) => {
           const token = res.data.auth_token;
           this.$store.commit("setToken", token);
-          axios.defaults.headers.common["Authorization"] = token;
+          axios.defaults.headers.common["Authorization"] = "Token " + token;
           localStorage.setItem("token", token);
           const toPath = this.$route.query.to || "/";
           this.$router.push(toPath);
-          console.log(res.data);
         })
         .catch((error) => console.error(error));
+
+      if (this.$store.getters.isAuthenticated) {
+        await axios
+          .get("api/v1/users/me/")
+          .then((res) => {
+            this.$store.commit("setUsername", res.data.username);
+          })
+          .catch((error) => console.error(error));
+      }
     },
   },
 };
