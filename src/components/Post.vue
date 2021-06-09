@@ -6,7 +6,9 @@
           <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-8" />
         </div>
         <span class="text-gray-700 text-sm">
-          <b>@{{ post.get_user }}</b> en <b>/musica</b> el {{ getDate(post.date) }}
+          <b>@{{ post.get_user }}</b>
+          <span v-if="post.get_communitie != ''"> en <b>/{{ post.get_communitie }}</b> </span>
+          el {{ getDate(post.date) }}
         </span>
       </div>
       <div class="post-title bold text-2xl">
@@ -59,7 +61,9 @@ export default {
       const day = date.getDate()
       const year = date.getFullYear()
       const hours = date.getHours()
-      const minutes = date.getMinutes()
+      let minutes = date.getMinutes()
+      if (minutes < 10)
+        minutes = '0' + minutes
 
       return `${day} de ${month} del ${year} a las ${hours}:${minutes}`
     }

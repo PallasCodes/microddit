@@ -1,5 +1,5 @@
 <template>
-  <div id="feed" class="flex gap-4">
+  <div id="feed" class="flex gap-4 py-4">
     <main class="w-full">
       <MakePost v-if="isAuthenticated" @post-created="addPost" />
       <Post v-for="post in posts" :key="post.id" :post="post" />
@@ -56,5 +56,10 @@ export default {
 <style scoped>
 #side {
   height: min-content;
+}
+
+#feed {
+  max-width: 1100px;
+  margin: 0 auto;
 }
 </style>

@@ -1,8 +1,6 @@
 <template>
   <TheNavbar />
-  <div id="feed" class="py-4">
-    <router-view />
-  </div>
+  <router-view />
   <TheBottomNavbar />
 </template>
 
@@ -35,8 +33,5 @@ export default {
 </script>
 
 <style scoped>
-#feed {
-  max-width: 1100px;
-  margin: 0 auto;
-}
+
 </style>

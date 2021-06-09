@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from '../store'
+
 import Feed from "../views/Feed.vue";
 import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
-import store from '../store'
+import Communities from "../views/Communities.vue";
+import Communitie from "../views/Communitie.vue";
 
 const routes = [{
     path: "/",
@@ -24,6 +27,16 @@ const routes = [{
     meta: {
       logedOutRequired: true
     }
+  },
+  {
+    path: "/communities",
+    name: "Communities",
+    component: Communities,
+  },
+  {
+    path: "/communitie/:category/:communitie",
+    name: "Communitie",
+    component: Communitie,
   },
 ];
 
