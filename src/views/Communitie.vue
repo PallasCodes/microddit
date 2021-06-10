@@ -1,14 +1,16 @@
 <template>
 	<header class="bg-white mb-4">
-		<div class="top-header h-44 overflow-hidden">
-			<img :src="communitie.get_image" class="w-full object-cover" />
+		<div class="top-header h-72 overflow-hidden">
+			<img :src="communitie.get_image" class="object-cover h-auto w-full" />
 		</div>
-		<div class="bottom-header flex justify-center flex-col h-20">
+		<div class="bottom-header flex justify-center flex-col py-4">
 			<div class="flex justify-between">
 				<h1 class="font-bold text-gray-800 text-3xl">{{ communitie.name }}</h1>
-				<button class="btn btn-primary text-sm">Unirme</button>
+				<button class="btn text-sm" :class="isJoinedClass" @click="joinOrLeave"> {{ isJoined ? 'Abandonar' : 'Unirme' }} </button>
 			</div>
-			<span class="tetx-gray-700">{{communitie.get_absolute_url}}</span>
+			<span class="tetx-gray-700 block text-sm">{{communitie.get_absolute_url}}</span>
+			<span class="tetx-gray-700 block text-sm">{{ numMembers }} miembros</span>
+			<span class="mt-2">{{ communitie.description }}</span>
 		</div>
 	</header>
 
@@ -43,21 +45,34 @@ export default {
 	data() {
 		return {
 			communitie: {},
-			posts: []
+			posts: [],
+			joined: false
 		}
 	},
 	async created() {
 		await this.getCommunitie()
-
 		await this.getPosts()
 
-		document.title = this.communitie.name + ' | Microddit'
+		window.document.title = this.communitie.name + ' | Microddit'
+
+		const communities = this.$store.getters.communities
+		const that = this
+
+		if (this.isAuthenticated) {
+			communities.forEach(communitie => {
+				if (communitie.id === this.communitie.id) {
+					that.joined = true
+				}
+			})
+		}
 	},
 	methods: {
 		async getCommunitie() {
 			await axios
 				.get('api/v1/communities/' + this.$route.params.category + '/' + this.$route.params.communitie)
-				.then(res => this.communitie = res.data)
+				.then(res => {
+					this.communitie = res.data
+				})
 				.catch(error => console.error(error))
 		},
 		async getPosts() {
@@ -68,11 +83,45 @@ export default {
 		addPost(post) {
 			this.posts.unshift(post)
 		},
+		async joinOrLeave() {
+			if (this.isAuthenticated) {
+				await axios
+					.post('api/v1/communities/join/', {
+						"id": this.communitie.id
+					})
+					.then(() => {
+						this.joined = !this.joined
+						if (this.joined) {
+							this.communitie.num_members++
+							this.$store.commit('addCommunitie', this.communitie)
+						} else {
+							this.communitie.num_members--
+							this.$store.commit('removeCommunitie', this.communitie)
+						}
+					})
+					.catch(error => console.error(error))
+			} else {
+				console.log('autentiquese')
+			}
+		}
 	},
 	computed: {
 		isAuthenticated() {
 			return this.$store.getters.isAuthenticated
+		},
+		isJoined() {
+			return this.joined
+		},
+		isJoinedClass() {
+			return {
+				'btn-outline-primary': this.joined,
+				'btn-primary': !this.joined
+			}
+		},
+		numMembers() {
+			return this.communitie.num_members
 		}
+
 	}
 }
 </script>

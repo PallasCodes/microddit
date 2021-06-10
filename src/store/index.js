@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import auth from "./modules/auth";
+import communities from "./modules/communities";
 
 export default createStore({
   state: {
@@ -17,6 +18,7 @@ export default createStore({
     }
   },
   modules: {
-    auth
+    auth,
+    communities
   },
 });

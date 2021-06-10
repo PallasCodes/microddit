@@ -52,6 +52,10 @@ body {
   border-color: #e03b51;
 }
 
+.btn-outline-primary {
+  @apply text-primary border border-primary;
+}
+
 /* -------- Forms ------- */
 .input {
   @apply border border-gray-300 p-1 rounded-md text-sm text-gray-700 w-full focus:border-blue-600 outline-none transition duration-200 ease-in-out;

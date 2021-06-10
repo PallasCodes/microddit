@@ -25,6 +25,13 @@ export default {
           this.$store.commit("setUsername", res.data.username);
         })
         .catch((error) => console.error(error));
+
+      await axios
+        .get("api/v1/communities/joined/")
+        .then(res => {
+          this.$store.commit('setCommunities', res.data)
+        })
+        .catch(error => console.error(error))
     } else {
       axios.defaults.headers.common['Authorization'] = ""
     }
