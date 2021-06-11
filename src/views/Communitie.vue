@@ -120,8 +120,10 @@ export default {
 		},
 		numMembers() {
 			return this.communitie.num_members
+		},
+		postsList() {
+			return this.posts
 		}
-
 	}
 }
 </script>

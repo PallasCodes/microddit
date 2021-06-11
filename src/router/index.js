@@ -6,6 +6,7 @@ import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import Communities from "../views/Communities.vue";
 import Communitie from "../views/Communitie.vue";
+import FullPost from "../views/FullPost.vue";
 
 const routes = [{
     path: "/",
@@ -37,6 +38,11 @@ const routes = [{
     path: "/communitie/:category/:communitie",
     name: "Communitie",
     component: Communitie,
+  },
+  {
+    path: "/post/:id",
+    name: "FullPost",
+    component: FullPost,
   },
 ];
 
