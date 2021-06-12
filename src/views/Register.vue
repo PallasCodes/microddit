@@ -12,21 +12,11 @@
       </div>
       <div class="mb-4">
         <label for="password" class="block">Contraseña</label>
-        <input
-          type="password"
-          name="password"
-          class="input"
-          v-model="password"
-        />
+        <input type="password" name="password" class="input" v-model="password" />
       </div>
       <div class="mb-6">
         <label for="repeat_password" class="block">Repetir contraseña</label>
-        <input
-          type="password"
-          name="repeat_password"
-          class="input"
-          v-model="repeatPassword"
-        />
+        <input type="password" name="repeat_password" class="input" v-model="repeatPassword" />
       </div>
       <button class="btn btn-primary w-full mb-4">Registrarme</button>
     </form>
@@ -47,21 +37,56 @@ export default {
     };
   },
   methods: {
-    register() {
+    async register() {
       const formData = {
         username: this.username,
         password: this.password,
         email: this.email,
       };
 
-      axios
+      await axios
         .post("/api/v1/users/", formData)
-        .then((res) => {
-          this.$router.push("/");
-          console.log(res.data);
+        .then(() => {
+          this.getToken()
+          this.$router.push("/")
         })
         .catch((error) => console.error(error));
     },
+    async getToken() {
+      await axios
+        .post("/api/v1/token/login/", {
+          username: this.username,
+          password: this.password
+        })
+        .then((res) => {
+          this.createProfile(res.data.auth_token);
+        })
+        .catch((error) => console.error(error));
+    },
+    async createProfile(token) {
+      axios.defaults.headers.common["Authorization"] = 'Token ' + token
+
+      await axios
+        .post('api/v1/profile/create/', {
+          username: this.username
+        })
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(error => console.error(error))
+    },
+    async setProfile(token) {
+      axios.defaults.headers.common["Authorization"] = 'Token ' + token
+
+      await axios
+        .get(`api/v1/user/${this.username}/`)
+        .then(res => {
+          console.log(res.data)
+          this.$store.commit('setProfileImage', res.data.get_profile_image)
+        })
+        .catch(error => console.error(error))
+    }
   },
+
 };
 </script>

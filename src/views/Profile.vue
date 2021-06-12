@@ -2,7 +2,7 @@
 	<div class="flex gap-4 py-4 profile">
 		<main class="w-full">
 			<section class="bg-white rounded shadow overflow-hidden mb-4">
-				<div class="h-56 overflow-hidden">
+				<div class="bg-gray-100 h-56 overflow-hidden">
 					<img :src="user.get_cover_image">
 				</div>
 				<div class="p-4">
@@ -18,14 +18,16 @@
 								@{{ user.get_username }}
 							</span>
 						</div>
-						<button class="btn btn-primary text-sm">Editar perfil</button>
+						<button v-if="isAuthenticated" class="btn text-sm" :class="{'btn-outline-primary': following, 'btn-primary': !following }" @click="followOrEdit()">
+							{{ following ? 'Dejar de seguir' : 'Seguir' }}
+						</button>
 					</div>
 					<p class="mt-2">
 						{{ user.bio_description }}
 					</p>
 					<div class="mt-4 text-sm flex gap-2 flex-wrap">
 						<router-link v-for="communitie in communities" :key="communitie.id" :to="'/communitie'+communitie.get_absolute_url" class="communitie rounded-xl bg-gray-300 py-1 px-3 text-bold text-gray-800 hover:bg-blue-200 transition duration-150 ease">
-							<i class="fas fa-basketball-ball mr-1"> </i>
+							<i :class="communitie.icon" class="mr-1"> </i>
 							<span> {{ communitie.name }} </span>
 						</router-link>
 					</div>
@@ -60,7 +62,8 @@ export default {
 		return {
 			posts: [],
 			user: {},
-			communities: []
+			communities: [],
+			followed: false
 		}
 	},
 	computed: {
@@ -69,6 +72,9 @@ export default {
 		},
 		isOwnProfile() {
 			return this.$store.getters.username === this.$route.params.username
+		},
+		following() {
+			return this.followed
 		}
 	},
 	methods: {
@@ -77,7 +83,6 @@ export default {
 				.get(`api/v1/posts/user/${this.$route.params.username}/`)
 				.then(res => {
 					this.posts = res.data
-					console.log(res.data)
 				})
 				.catch(error => console.error(error))
 		},
@@ -88,9 +93,19 @@ export default {
 			await axios
 				.get(`api/v1/user/${this.$route.params.username}/`)
 				.then(res => {
-					console.log(res.data)
 					this.user = res.data
 					window.document.title = res.data.name + ' | Microddit'
+				})
+				.catch(error => console.error(error))
+
+			await axios
+				.get('api/v1/user/get-followed/')
+				.then(res => {
+					let users = []
+					res.data.forEach(user => users.push(user.get_username))
+					if (users.includes(this.$route.params.username)) {
+						this.followed = true
+					}
 				})
 				.catch(error => console.error(error))
 		},
@@ -99,10 +114,21 @@ export default {
 				.get(`api/v1/communities/joined/${this.$route.params.username}/`)
 				.then(res => {
 					this.communities = res.data
-					console.log(res.data)
 				})
 				.catch(error => console.error(error))
-		}
+		},
+		async followOrEdit() {
+			if (this.isOwnProfile) {
+				console.log('own profile')
+			} else {
+				await axios
+					.post('api/v1/user/follow/', { username: this.$route.params.username })
+					.then(() => {
+						this.followed = !this.followed
+					})
+					.catch(error => console.error(error))
+			}
+		},
 	},
 	async mounted() {
 		await this.getUser()

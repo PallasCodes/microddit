@@ -6,8 +6,12 @@
           <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-8" />
         </div>
         <span class="text-gray-700 text-sm">
-          <b>@{{ post.get_user }}</b>
-          <span v-if="post.get_communitie != ''"> en <b>/{{ post.get_communitie }}</b> </span>
+          <b>
+            <router-link :to="`/user/${post.get_user}`">@{{ post.get_user }}</router-link>
+          </b>
+          <span v-if="post.get_communitie != ''"> en <b>
+              <router-link :to="`/communitie${post.get_communitie_url}`">{{ post.get_communitie_url }}</router-link>
+            </b></span>
           el {{ getDate(post.date) }}
         </span>
       </div>

@@ -43,9 +43,9 @@
             </svg>
           </a>
         </div>
-        <a href="" class="flex ml-6">
+        <router-link :to="`/user/${getUsername}`" class="flex ml-6">
           <div class="w-10 h-10 rounded overflow-hidden mr-2">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Jim_Morrison_1969.JPG/235px-Jim_Morrison_1969.JPG" alt="avatar" />
+            <img :src="profileImage" alt="avatar" />
           </div>
           <div>
             <span class="
@@ -58,7 +58,7 @@
               ">{{ getUsername }}</span>
             <span class="block text-gray-400 text-xs">Ver perfil</span>
           </div>
-        </a>
+        </router-link>
       </div>
     </nav>
   </header>
@@ -74,11 +74,14 @@ export default {
   },
   computed: {
     isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
+      return this.$store.getters.isAuthenticated
     },
     getUsername() {
-      return this.$store.getters.username;
+      return this.$store.getters.username
     },
+    profileImage() {
+      return this.$store.getters.profileImage
+    }
   },
   methods: {
     logout() {

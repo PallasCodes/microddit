@@ -16,6 +16,7 @@ export default {
   },
   async beforeCreate() {
     this.$store.commit('autoLogin')
+
     if (this.$store.getters.isAuthenticated) {
       axios.defaults.headers.common['Authorization'] = "Token " + this.$store.getters.token
 
@@ -35,9 +36,27 @@ export default {
           this.$store.commit('setCommunities', res.data)
         })
         .catch(error => console.error(error))
+
+      await axios
+        .get(`api/v1/user/${username}/`)
+        .then(res => {
+          this.$store.commit('setProfileImage', res.data.get_profile_image)
+        })
+        .catch(error => console.error(error))
+
+      await axios
+        .get('api/v1/user/get-followed/')
+        .then(res => {
+          let users = []
+          res.data.forEach(user => users.push(user.id))
+          this.$store.commit('setFollowedUsers', users)
+        })
+        .catch(error => console.error(error))
+
     } else {
       axios.defaults.headers.common['Authorization'] = ""
     }
+
   },
 };
 </script>

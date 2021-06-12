@@ -58,6 +58,16 @@ export default {
             this.$store.commit("setUsername", res.data.username);
           })
           .catch((error) => console.error(error));
+
+        await axios
+          .get('api/v1/user/get-followed/')
+          .then(res => {
+            let users = []
+            res.data.forEach(user => users.push(user.id))
+            this.$store.commit('setFollowedUsers', users)
+            console.log(this.$store.getters.followedUsers)
+          })
+          .catch(error => console.error(error))
       }
     },
   },

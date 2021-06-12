@@ -38,7 +38,10 @@ export default {
   methods: {
     async getPosts() {
       await axios('/api/v1/public-feed/')
-        .then(res => this.posts = res.data)
+        .then(res => {
+          this.posts = res.data
+          console.log(res.data)
+        })
         .catch(error => console.error(error))
     },
     addPost(post) {
