@@ -1,7 +1,7 @@
 <template>
 	<header class="bg-white mb-4">
 		<div class="top-header h-72 overflow-hidden">
-			<img :src="communitie.get_image" class="object-cover h-auto w-full" />
+			<img :src="communitie.get_image" class="obj-cover h-auto w-full" />
 		</div>
 		<div class="bottom-header flex justify-center flex-col py-4">
 			<div class="flex justify-between">

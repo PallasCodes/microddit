@@ -72,7 +72,6 @@ export default {
       username: "",
     };
   },
-  mounted() {},
   computed: {
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;

@@ -7,6 +7,7 @@ import Login from "../views/Login.vue";
 import Communities from "../views/Communities.vue";
 import Communitie from "../views/Communitie.vue";
 import FullPost from "../views/FullPost.vue";
+import Profile from "../views/Profile.vue";
 
 const routes = [{
     path: "/",
@@ -43,6 +44,11 @@ const routes = [{
     path: "/post/:id",
     name: "FullPost",
     component: FullPost,
+  },
+  {
+    path: "/user/:username",
+    name: "Profile",
+    component: Profile,
   },
 ];
 

@@ -19,15 +19,18 @@ export default {
     if (this.$store.getters.isAuthenticated) {
       axios.defaults.headers.common['Authorization'] = "Token " + this.$store.getters.token
 
+      let username = ''
+
       await axios
         .get("api/v1/users/me/")
         .then((res) => {
+          username = res.data.username
           this.$store.commit("setUsername", res.data.username);
         })
         .catch((error) => console.error(error));
 
       await axios
-        .get("api/v1/communities/joined/")
+        .get(`api/v1/communities/joined/${username}`)
         .then(res => {
           this.$store.commit('setCommunities', res.data)
         })
