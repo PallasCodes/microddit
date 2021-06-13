@@ -12,18 +12,18 @@
 					<div class="flex justify-between">
 						<div>
 							<h3 class="text-xl font-bold text-gray-800">
-								{{ user.name }}
+								{{ name }}
 							</h3>
 							<span class="block">
 								@{{ user.get_username }}
 							</span>
 						</div>
 						<button v-if="isAuthenticated" class="btn text-sm" :class="{'btn-outline-primary': following, 'btn-primary': !following }" @click="followOrEdit()">
-							{{ following ? 'Dejar de seguir' : 'Seguir' }}
+							{{ isOwnProfile ? 'Editar perfil' : following ? 'Dejar de seguir' : 'Seguir' }}
 						</button>
 					</div>
 					<p class="mt-2">
-						{{ user.bio_description }}
+						{{ bioDescription }}
 					</p>
 					<div class="mt-4 text-sm flex gap-2 flex-wrap">
 						<router-link v-for="communitie in communities" :key="communitie.id" :to="'/communitie'+communitie.get_absolute_url" class="communitie rounded-xl bg-gray-300 py-1 px-3 text-bold text-gray-800 hover:bg-blue-200 transition duration-150 ease">
@@ -41,12 +41,32 @@
 			<TheFooter />
 		</div>
 	</div>
+
+	<Modal v-show="isModalVisible" @close="closeModal" @send="updateProfile">
+		<template v-slot:header>
+			Editar información de perfil
+		</template>
+
+		<template v-slot:body>
+			<form @submit.prevent="">
+				<div class="mb-4">
+					<label for="username" class="block">Nombre</label>
+					<input type="text" name="username" class="input" v-model="name" />
+				</div>
+				<div class="mb-4">
+					<label for="password" class="block">Descripción de perfil</label>
+					<textarea type="password" name="password" class="input resize-none" v-model="bioDescription"></textarea>
+				</div>
+			</form>
+		</template>
+	</Modal>
 </template>
 
 <script>
 import Post from "@/components/Post.vue";
 import TheTopCommunities from "@/components/UI/TheTopCommunities.vue";
 import TheFooter from "@/components/UI/TheFooter.vue";
+import Modal from "@/components/UI/Modal.vue"
 import MakePost from "@/components/MakePost.vue";
 import axios from 'axios'
 
@@ -56,14 +76,18 @@ export default {
 		Post,
 		TheTopCommunities,
 		TheFooter,
-		MakePost
+		MakePost,
+		Modal
 	},
 	data() {
 		return {
 			posts: [],
 			user: {},
 			communities: [],
-			followed: false
+			followed: false,
+			isModalVisible: false,
+			name: '',
+			bioDescription: ''
 		}
 	},
 	computed: {
@@ -78,6 +102,23 @@ export default {
 		}
 	},
 	methods: {
+		async updateProfile() {
+			await axios
+				.put('api/v1/user/update/', {
+					name: this.name,
+					bio_description: this.bioDescription
+				})
+				.then(() => {
+					this.closeModal()
+				})
+				.catch(error => console.error(error))
+		},
+		showModal() {
+			this.isModalVisible = true;
+		},
+		closeModal() {
+			this.isModalVisible = false;
+		},
 		async getPosts() {
 			await axios
 				.get(`api/v1/posts/user/${this.$route.params.username}/`)
@@ -94,6 +135,8 @@ export default {
 				.get(`api/v1/user/${this.$route.params.username}/`)
 				.then(res => {
 					this.user = res.data
+					this.name = res.data.name
+					this.bioDescription = res.data.bio_description
 					window.document.title = res.data.name + ' | Microddit'
 				})
 				.catch(error => console.error(error))
@@ -119,7 +162,7 @@ export default {
 		},
 		async followOrEdit() {
 			if (this.isOwnProfile) {
-				console.log('own profile')
+				this.isModalVisible = true
 			} else {
 				await axios
 					.post('api/v1/user/follow/', { username: this.$route.params.username })
