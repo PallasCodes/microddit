@@ -2,13 +2,15 @@
   <div id="feed" class="flex gap-4 py-4">
     <main class="w-full">
       <MakePost v-if="isAuthenticated" @post-created="addPost" />
-      <Post v-for="post in posts" :key="post.id" :post="post" />
+      <Post v-for="post in posts" :key="post.id" :post="post" @delete-post="removePost" />
     </main>
     <div class="hidden md:block sticky top-16" id="side">
       <TheTopCommunities />
       <TheFooter />
     </div>
   </div>
+
+
 </template>
 
 <script>
@@ -23,11 +25,12 @@ export default {
     Post,
     TheTopCommunities,
     TheFooter,
-    MakePost
+    MakePost,
   },
   data() {
     return {
-      posts: []
+      posts: [],
+      isModalVisible: false,
     }
   },
   mounted() {
@@ -36,6 +39,9 @@ export default {
     document.title = 'Microddit'
   },
   methods: {
+    removePost(postId) {
+      this.posts = this.posts.filter(post => post.id !== postId)
+    },
     async getPosts() {
       await axios('/api/v1/public-feed/')
         .then(res => {

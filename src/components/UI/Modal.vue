@@ -20,11 +20,12 @@
 				</section>
 
 				<footer class="text-center">
-					<button type="button" class="btn btn-outline-secondary mr-2" @click="close" aria-label="Cerrar modal">
-						Cancelar
+					<button type="button" class="mr-2" @click="close" aria-label="Cerrar modal">
+						<span class="btn btn-outline-secondary">Cancelar</span>
 					</button>
-					<button type="button" class="btn btn-secondary" @click="send" aria-label="Enviar información">
-						Guardar
+					<button type="button" @click="send">
+						<slot name="confirmBtn">
+						</slot>
 					</button>
 				</footer>
 			</div>
@@ -48,6 +49,7 @@ export default {
 
 <style scoped>
 .modal-backdrop {
+	z-index: 1;
 	position: fixed;
 	top: 0;
 	bottom: 0;

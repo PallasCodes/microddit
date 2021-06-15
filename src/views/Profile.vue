@@ -59,6 +59,10 @@
 				</div>
 			</form>
 		</template>
+
+		<template v-slot:confirmBtn>
+			<span class="btn btn-primary">Guardar</span>
+		</template>
 	</Modal>
 </template>
 

@@ -27,6 +27,7 @@ export default {
         .then((res) => {
           username = res.data.username
           this.$store.commit("setUsername", res.data.username);
+          this.$store.commit("setUserId", res.data.id);
         })
         .catch((error) => console.error(error));
 

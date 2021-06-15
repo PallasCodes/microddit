@@ -56,6 +56,7 @@ export default {
           .get("api/v1/users/me/")
           .then((res) => {
             this.$store.commit("setUsername", res.data.username);
+            this.$store.commit("setUserId", res.data.id);
           })
           .catch((error) => console.error(error));
 

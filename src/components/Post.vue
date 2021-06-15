@@ -1,5 +1,10 @@
 <template>
-  <article class="card post hover:border-4 hover:border-black mb-4 max-w-3xl">
+  <article class="card post mb-4 max-w-3xl relative">
+    <span @click="showModal" v-if="ownPost" class="cursor-pointer justify-align-end absolute top-0 right-0 mr-3 pt-3 font-bold text-gray-400 hover:text-red-500 transition duration-150 ease">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </span>
     <header class="mb-2">
       <div class="flex items-center mb-1">
         <div class="w-8 h-8 rounded-full overflow-hidden mr-2">
@@ -14,6 +19,7 @@
             </b></span>
           el {{ getDate(post.date) }}
         </span>
+
       </div>
       <router-link :to="'/post/'+this.post.id" class="post-content">
         <div class="post-title bold text-2xl">
@@ -62,25 +68,59 @@
       </div>
     </footer>
   </article>
+
+  <Modal v-if="isModalVisible" @close="closeModal" @send="deletePost">
+    <template v-slot:header>
+      ¿Deseas eliminar este post?
+    </template>
+    <template v-slot:body>
+      "{{ post.title }}"
+    </template>
+    <template v-slot:confirmBtn>
+      <span class="btn bg-red-500 text-white border border-red-500">Eliminar</span>
+    </template>
+  </Modal>
 </template>
 
 <script>
 import axios from 'axios'
+import Modal from '@/components/UI/Modal.vue'
 
 export default {
   name: "Post",
+  emits: ['delete-post'],
+  components: {
+    Modal
+  },
   data() {
     return {
       reaction: null,
       likes: 0,
       dislikes: 0,
       numComments: 0,
+      isModalVisible: false,
     }
   },
   props: {
     post: Object
   },
   methods: {
+    showModal() {
+      this.isModalVisible = true
+    },
+    closeModal() {
+      this.isModalVisible = false
+    },
+    async deletePost() {
+      await axios
+        .delete(`api/v1/posts/delete/${this.post.id}/`)
+        .then(() => {
+          this.$emit('delete-post', this.post.id)
+        })
+        .catch(error => console.error(error))
+
+      this.isModalVisible = false
+    },
     setReactions() {
       this.reaction = this.post.get_reaction
       this.likes = this.post.get_likes
@@ -159,6 +199,9 @@ export default {
     getNumComments() {
       return this.numComments
     },
+    ownPost() {
+      return this.$store.getters.username === this.post.get_user
+    }
   },
   mounted() {
     this.setReactions()

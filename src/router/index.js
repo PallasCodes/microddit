@@ -8,6 +8,7 @@ import Communities from "../views/Communities.vue";
 import Communitie from "../views/Communitie.vue";
 import FullPost from "../views/FullPost.vue";
 import Profile from "../views/Profile.vue";
+import Search from "../views/Search.vue";
 
 const routes = [{
     path: "/",
@@ -49,6 +50,11 @@ const routes = [{
     path: "/user/:username",
     name: "Profile",
     component: Profile,
+  },
+  {
+    path: "/search/:query",
+    name: "Search",
+    component: Search,
   },
 ];
 
