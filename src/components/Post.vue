@@ -7,9 +7,11 @@
     </span>
     <header class="mb-2">
       <div class="flex items-center mb-1">
-        <div class="w-8 h-8 rounded-full overflow-hidden mr-2">
-          <img :src="post.get_user_image" alt="User profile image" class="object-cover w-full h-8" />
-        </div>
+        <router-link :to="`/user/${post.get_user}`">
+          <div class="w-8 h-8 rounded-full overflow-hidden mr-2">
+            <img :src="post.get_user_image" alt="User profile image" class="object-cover w-full h-8" />
+          </div>
+        </router-link>
         <span class="text-gray-700 text-sm">
           <b>
             <router-link :to="`/user/${post.get_user}`">@{{ post.get_user }}</router-link>
@@ -31,10 +33,11 @@
       <div class="post-img overflow-hidden mb-2" v-if="post.get_image">
         <img :src="post.get_image" alt="post" class="w-full h-auto object-cover" />
       </div>
-      <span class="block post-text text">
+      <span class="block post-text text mb-4">
         {{ post.post_text }}
       </span>
     </router-link>
+    <hr>
     <footer class="flex text-blue-600 mt-3">
       <div class="flex items-center mr-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="(getReaction === null || getReaction === false) || !isAuthenticated" @click="react(true)">

@@ -1,7 +1,7 @@
 <template>
 	<transition name="modal-fade">
-		<div class="modal-backdrop" @click="close">
-			<div class="card flex flex-col z-10" role="dialog">
+		<div class="modal-backdrop z-20 close-modal" @click="close">
+			<div class="card flex flex-col z-30" role="dialog">
 				<header class="font-bold text-gray-800 text-2xl mb-1">
 					<slot name="header">
 
@@ -17,8 +17,8 @@
 				</section>
 
 				<footer class="text-center">
-					<button type="button" class="mr-2" @click="close" aria-label="Cerrar modal">
-						<span class="btn btn-outline-secondary">Cancelar</span>
+					<button type="button" class="mr-2 close-modal" @click="close" aria-label="Cerrar modal">
+						<span class="btn btn-outline-secondary close-modal">Cancelar</span>
 					</button>
 					<button type="button" @click="send">
 						<slot name="confirmBtn">
@@ -35,7 +35,9 @@ export default {
 	name: 'Modal',
 	methods: {
 		close() {
-			this.$emit('close');
+			if (event.target.classList.contains('close-modal')) {
+				this.$emit('close')
+			}
 		},
 		send() {
 			this.$emit('send');
@@ -46,7 +48,6 @@ export default {
 
 <style scoped>
 .modal-backdrop {
-	z-index: 1;
 	position: fixed;
 	top: 0;
 	bottom: 0;

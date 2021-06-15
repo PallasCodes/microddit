@@ -4,8 +4,8 @@
 			<img :src="$store.getters.profileImage" />
 		</div>
 		<form @submit.prevent="createPost()" class="w-full text-gray-700">
-			<input type="text" class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-100 mb-2" placeholder="Título" v-model="title">
-			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-100 resize-none" rows="3" placeholder="Publicar algo..." v-model="postText" ref="textarea"></textarea>
+			<input type="text" class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-200 mb-2" placeholder="Título" v-model="title">
+			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-200 resize-none" rows="3" placeholder="Publicar algo..." v-model="postText" ref="textarea"></textarea>
 			<div class="flex justify-between items-end mt-2">
 				<input type="file" hidden="true" ref="image" accept=".png, .jpg, .jpeg">
 				<span @click="chooseFile()">

@@ -17,10 +17,13 @@
 				<ol>
 					<li v-for="communitie in communities" :key="communitie.id" class="text-gray-800 text-lg py-3 border-b border-gray-100">
 						<router-link :to="'/communitie'+communitie.get_absolute_url" class="block px-2 flex items-center ">
-							<div class="w-10 h-10 rounded-full overflow-hidden mr-2">
+							<div class="w-10 h-10 rounded-full overflow-hidden mr-3">
 								<img :src="communitie.get_image" :alt="communitie.name" class="object-cover w-full h-10" />
 							</div>
-							<span>{{ communitie.name }}</span>
+							<div>
+								<span class="block font-bold text-gray-700 leading-4">{{ communitie.name }}</span>
+								<span class="text-sm ">{{ communitie.num_members }} miembros</span>
+							</div>
 						</router-link>
 					</li>
 				</ol>
@@ -51,11 +54,22 @@ export default {
 		},
 		async selectCategory(category) {
 			this.selectedItem = category
+			let url = ''
+
+			if (this.selectedItem.name === 'Comunidades populares') {
+				url = 'api/v1/communities/top/'
+			} else {
+				url = 'api/v1/communities/category' + this.selectedItem.get_absolute_url
+			}
 
 			await axios
-				.get('api/v1/communities/category' + this.selectedItem.get_absolute_url)
+				.get(url)
 				.then(res => {
-					this.communities = res.data.communities
+					if (this.selectedItem.name === 'Comunidades populares') {
+						this.communities = res.data
+					} else {
+						this.communities = res.data.communities
+					}
 				})
 				.catch(error => console.error(error))
 		},
@@ -72,6 +86,11 @@ export default {
 		await this.getCategories()
 		this.categories.unshift({
 			name: 'Comunidades populares'
+		})
+		await this.selectCategory({
+			name: 'Comunidades populares',
+			id: 0,
+			get_absolute_url: ''
 		})
 	}
 }

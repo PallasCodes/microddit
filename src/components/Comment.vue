@@ -1,15 +1,19 @@
 <template>
 	<div class="py-2 flex">
-		<div class="w-6 h-6 rounded-full overflow-hidden mr-2">
-			<img :src="comment.get_user_image" alt="User profile image" class="object-cover w-full h-6" />
-		</div>
+		<router-link :to="`/user/${comment.get_user}`">
+			<div class="w-6 h-6 rounded-full overflow-hidden mr-2">
+				<img :src="comment.get_user_image" alt="User profile image" class="object-cover w-full h-6" />
+			</div>
+		</router-link>
 		<div class="text-sm text-gray-700">
-			<span class="font-bold ">@{{ comment.get_user }}</span>
+			<router-link :to="`/user/${comment.get_user}`">
+				<span class="font-bold ">@{{ comment.get_user }}</span>
+			</router-link>
 			<span> el {{ getDate(comment.date) }}</span>
 			<span class="block text-black text-base mt-1">{{ comment.comment }}</span>
 		</div>
 	</div>
-</template>
+</template>a
 
 <script>
 export default {

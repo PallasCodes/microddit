@@ -4,7 +4,7 @@
 			<img :src="$store.getters.profileImage" alt="Profile image" class="object-cover w-full h-8" />
 		</div>
 		<form @submit.prevent="postComment()" class="w-full text-gray-700">
-			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-100 resize-none" rows="1" placeholder="Comentar algo..." v-model="comment"></textarea>
+			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-200 resize-none" rows="2" placeholder="Comentar algo..." v-model="comment"></textarea>
 			<div class="flex justify-between items-end mt-2">
 				<button class="btn btn-primary text-sm flex items-center justify-center" type="submit">
 					Comentar

@@ -4,7 +4,7 @@
 		<section class="bg-white rounded shadow mb-4">
 			<div>
 				<h3 class="text-xl font-bold text-gray-700 mb-2 p-4 pb-0">Publicaciones</h3>
-				<p v-if="posts.length === 0" class="px-4">Publicaciones no encontrados</p>
+				<p v-if="getPosts.length === 0" class="px-4">Publicaciones no encontradas</p>
 				<div v-for="post in getPosts" :key="post.id">
 					<router-link class="px-4 py-2 flex items-center hover:bg-blue-50 cursor-pointer transition duration-150 ease" :to="`/post/${post.id}`">
 						<div class="w-10 h-10 rounded-full overflow-hidden mr-2">

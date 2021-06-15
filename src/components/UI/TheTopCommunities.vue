@@ -1,61 +1,55 @@
 <template>
   <aside class="card w-full">
-    <h4 class="font-bold text-lg text-gray-900 mb-4">Comunidades más populares</h4>
-    <ol class="flex flex-col gap-2">
-      <a href="">
-        <li class="flex items-center">
-          <span class="mr-4">1 </span>
-          <div class="w-7 h-7 rounded-full overflow-hidden mr-2">
-            <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-7" />
+    <h4 class="font-bold text-lg text-gray-800 mb-4">Comunidades más populares</h4>
+    <ol class="flex flex-col">
+      <router-link :to="`/communitie${communitie.get_absolute_url}`" v-for="(communitie, i) in getCommunities" :key="communitie.id">
+        <li class="flex items-center mb-3">
+          <span class="mr-4">{{ i+1 }} </span>
+          <div class="w-9 h-9 rounded-full overflow-hidden mr-2">
+            <img :src="communitie.get_image" class="object-cover w-full h-9" />
           </div>
-          <span>Filosofía</span>
-        </li>
-      </a>
-      <a href="">
-        <li class="flex items-center">
-          <span class="mr-4">2 </span>
-          <div class="w-7 h-7 rounded-full overflow-hidden mr-2">
-            <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-7" />
+          <div>
+            <span class="block font-bold text-gray-700 leading-4">{{ communitie.name }}</span>
+            <span class="text-sm ">{{ communitie.num_members }} miembros</span>
           </div>
-          <span>Artes Marciales</span>
         </li>
-      </a>
-      <a href="">
-        <li class="flex items-center">
-          <span class="mr-4">3 </span>
-          <div class="w-7 h-7 rounded-full overflow-hidden mr-2">
-            <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-7" />
-          </div>
-          <span>Cine</span>
-        </li>
-      </a>
-      <a href="">
-        <li class="flex items-center">
-          <span class="mr-4">4 </span>
-          <div class="w-7 h-7 rounded-full overflow-hidden mr-2">
-            <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-7" />
-          </div>
-          <span>Rock</span>
-        </li>
-      </a>
-      <a href="" class="">
-        <li class="flex items-center">
-          <span class="mr-4">5 </span>
-          <div class="w-7 h-7 rounded-full overflow-hidden mr-2">
-            <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-7" />
-          </div>
-          <span>Diseño</span>
-        </li>
-      </a>
+      </router-link>
+
     </ol>
-    <div class="w-full mt-3">
+    <div class="w-full">
       <router-link to="/communities" class="text-blue-500 text-sm font-bold">Ver más</router-link>
     </div>
   </aside>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: "TheTopCommunities",
+  data() {
+    return {
+      communities: []
+    }
+  },
+  computed: {
+    getCommunities() {
+      return this.splicedCommunities()
+    }
+  },
+  methods: {
+    splicedCommunities() {
+      return this.communities.splice(0, 5)
+    }
+  },
+  async mounted() {
+    await axios
+      .get('api/v1/communities/top/')
+      .then(res => {
+        console.log(res.data)
+        this.communities = res.data
+      })
+      .catch(error => console.error(error))
+  }
 };
 </script>
