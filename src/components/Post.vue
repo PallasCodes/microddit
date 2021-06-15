@@ -34,7 +34,7 @@
         <img :src="post.get_image" alt="post" class="w-full h-auto object-cover" />
       </div>
       <span class="block post-text text mb-4">
-        {{ post.post_text }}
+        {{ fullText ? post.post_text : post.get_description }}
       </span>
     </router-link>
     <hr>
@@ -61,14 +61,16 @@
           {{ getDislikes }}
         </span>
       </div>
-      <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-        </svg>
-        <span class="text-gray-500 ml-1 text-xs">
-          {{ getNumComments }}
-        </span>
-      </div>
+      <router-link :to="'/post/'+this.post.id">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+          </svg>
+          <span class="text-gray-500 ml-1 text-xs">
+            {{ getNumComments }}
+          </span>
+        </div>
+      </router-link>
     </footer>
   </article>
 
@@ -109,9 +111,7 @@ export default {
       isModalVisible: false,
     }
   },
-  props: {
-    post: Object
-  },
+  props: ['post', 'fullText'],
   methods: {
     showModal() {
       this.isModalVisible = true
@@ -199,7 +199,11 @@ export default {
           })
           .catch(error => console.error(error))
       } else {
-        console.log('autentiquese')
+        createToast('Debes iniciar sesión para poder reaccionar a publicaciones', {
+          type: 'info',
+          hideProgressBar: 'true',
+          position: 'bottom-right',
+        })
       }
     }
   },

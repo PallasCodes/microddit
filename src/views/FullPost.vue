@@ -1,7 +1,7 @@
 <template>
 	<div class="flex gap-4 py-4 post">
 		<main class="w-full">
-			<Post :post="getPost" :key="post.id" />
+			<Post :post="getPost" :key="post.id" fullText="true" />
 			<span class="mb-4 block"></span>
 			<MakeComment :postId="getPostId" v-if="isAuthenticated" @comment-created="addComent" />
 			<section class="card rounded-t-none">
