@@ -1,14 +1,11 @@
 <template>
 	<transition name="modal-fade">
-		<div class="modal-backdrop">
-			<div class="card flex flex-col" role="dialog">
+		<div class="modal-backdrop" @click="close">
+			<div class="card flex flex-col z-10" role="dialog">
 				<header class="font-bold text-gray-800 text-2xl mb-1">
 					<slot name="header">
 
 					</slot>
-					<button type="button" class="btn-close text-blue-600 font-bold text-xl relative" @click="close" aria-label="Cerrar modal" id="closeBtn">
-						x
-					</button>
 				</header>
 
 				<hr>

@@ -1,11 +1,11 @@
 <template>
 	<div class="card mb-4 flex w-full">
 		<div class="w-12 h-12 rounded-full overflow-hidden mr-2">
-			<img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-12" />
+			<img :src="$store.getters.profileImage" />
 		</div>
 		<form @submit.prevent="createPost()" class="w-full text-gray-700">
 			<input type="text" class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-100 mb-2" placeholder="Título" v-model="title">
-			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-100 resize-none" rows="2" placeholder="Publicar algo..." v-model="postText" @click="resize(5)" ref="textarea" @blur="resize(2)"></textarea>
+			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-100 resize-none" rows="3" placeholder="Publicar algo..." v-model="postText" ref="textarea"></textarea>
 			<div class="flex justify-between items-end mt-2">
 				<input type="file" hidden="true" ref="image" accept=".png, .jpg, .jpeg">
 				<span @click="chooseFile()">
@@ -29,6 +29,8 @@
 
 <script>
 import axios from 'axios'
+import { createToast } from 'mosha-vue-toastify';
+import 'mosha-vue-toastify/dist/style.css'
 
 export default {
 	name: 'MakePost',
@@ -62,8 +64,20 @@ export default {
 						this.title = ''
 						this.postText = ''
 						this.$emit('post-created', res.data)
+						createToast('Publicación creada', {
+							type: 'info',
+							hideProgressBar: 'true',
+							position: 'bottom-right',
+						})
 					})
-					.catch(error => console.error(error))
+					.catch(error => {
+						console.error(error)
+						createToast('Error al publicar. Inténtalo más tarde', {
+							type: 'danger',
+							hideProgressBar: 'true',
+							position: 'bottom-right',
+						})
+					})
 			}
 		},
 		validateForm() {
@@ -83,9 +97,6 @@ export default {
 		chooseFile() {
 			this.$refs.image.click()
 			this.image = true
-		},
-		resize(num) {
-			this.$refs.textarea.rows = num
 		},
 	},
 	computed: {

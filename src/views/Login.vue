@@ -61,6 +61,13 @@ export default {
           .catch((error) => console.error(error));
 
         await axios
+          .get(`api/v1/user/${this.$store.getters.username}/`)
+          .then(res => {
+            this.$store.commit('setProfileImage', res.data.get_profile_image)
+          })
+          .catch(error => console.error(error))
+
+        await axios
           .get('api/v1/user/get-followed/')
           .then(res => {
             let users = []

@@ -18,6 +18,7 @@ import Post from "@/components/Post.vue";
 import TheTopCommunities from "@/components/UI/TheTopCommunities.vue";
 import TheFooter from "@/components/UI/TheFooter.vue";
 import MakePost from "@/components/MakePost.vue";
+
 import axios from 'axios'
 
 export default {

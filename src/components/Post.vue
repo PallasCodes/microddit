@@ -8,7 +8,7 @@
     <header class="mb-2">
       <div class="flex items-center mb-1">
         <div class="w-8 h-8 rounded-full overflow-hidden mr-2">
-          <img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-8" />
+          <img :src="post.get_user_image" alt="User profile image" class="object-cover w-full h-8" />
         </div>
         <span class="text-gray-700 text-sm">
           <b>
@@ -74,7 +74,9 @@
       ¿Deseas eliminar este post?
     </template>
     <template v-slot:body>
-      "{{ post.title }}"
+      <span class="mb-2 text-center block">
+        "{{ post.title }}"
+      </span>
     </template>
     <template v-slot:confirmBtn>
       <span class="btn bg-red-500 text-white border border-red-500">Eliminar</span>
@@ -84,6 +86,9 @@
 
 <script>
 import axios from 'axios'
+import { createToast } from 'mosha-vue-toastify';
+import 'mosha-vue-toastify/dist/style.css'
+
 import Modal from '@/components/UI/Modal.vue'
 
 export default {
@@ -116,8 +121,20 @@ export default {
         .delete(`api/v1/posts/delete/${this.post.id}/`)
         .then(() => {
           this.$emit('delete-post', this.post.id)
+          createToast('Publicación eliminada', {
+            type: 'info',
+            hideProgressBar: 'true',
+            position: 'bottom-right',
+          })
         })
-        .catch(error => console.error(error))
+        .catch(error => {
+          console.error(error)
+          createToast('Error al eliminar la publicación. Inténtalo más tarde', {
+            type: 'danger',
+            hideProgressBar: 'true',
+            position: 'bottom-right',
+          })
+        })
 
       this.isModalVisible = false
     },

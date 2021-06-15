@@ -72,6 +72,9 @@ import TheTopCommunities from "@/components/UI/TheTopCommunities.vue";
 import TheFooter from "@/components/UI/TheFooter.vue";
 import Modal from "@/components/UI/Modal.vue"
 import MakePost from "@/components/MakePost.vue";
+
+import { createToast } from 'mosha-vue-toastify';
+import 'mosha-vue-toastify/dist/style.css'
 import axios from 'axios'
 
 export default {
@@ -173,7 +176,14 @@ export default {
 					.then(() => {
 						this.followed = !this.followed
 					})
-					.catch(error => console.error(error))
+					.catch(error => {
+						console.error(error)
+						createToast('Error en el servidor. Inténtalo más tarde', {
+							type: 'danger',
+							hideProgressBar: 'true',
+							position: 'bottom-right',
+						})
+					})
 			}
 		},
 	},

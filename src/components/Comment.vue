@@ -1,7 +1,7 @@
 <template>
 	<div class="py-2 flex">
 		<div class="w-6 h-6 rounded-full overflow-hidden mr-2">
-			<img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-6" />
+			<img :src="comment.get_user_image" alt="User profile image" class="object-cover w-full h-6" />
 		</div>
 		<div class="text-sm text-gray-700">
 			<span class="font-bold ">@{{ comment.get_user }}</span>

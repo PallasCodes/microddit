@@ -29,6 +29,9 @@
 
 <script>
 import axios from 'axios'
+import { createToast } from 'mosha-vue-toastify';
+import 'mosha-vue-toastify/dist/style.css'
+
 import Post from "@/components/Post.vue";
 import TheTopCommunities from "@/components/UI/TheTopCommunities.vue";
 import TheFooter from "@/components/UI/TheFooter.vue";
@@ -99,9 +102,20 @@ export default {
 							this.$store.commit('removeCommunitie', this.communitie)
 						}
 					})
-					.catch(error => console.error(error))
+					.catch(error => {
+						console.error(error)
+						createToast('Error en el servidor. Inténtalo más tarde', {
+							type: 'danger',
+							hideProgressBar: 'true',
+							position: 'bottom-right',
+						})
+					})
 			} else {
-				console.log('autentiquese')
+				createToast('Debes iniciar sesión para unirte a una comunidad', {
+					type: 'warning',
+					hideProgressBar: 'true',
+					position: 'bottom-right',
+				})
 			}
 		}
 	},
