@@ -19,7 +19,7 @@
 			<MakePost v-if="isAuthenticated" @post-created="addPost" :communitie="communitie.id" />
 			<Post v-for="post in posts" :key="post.id" :post="post" />
 		</main>
-		<div class="hidden md:block sticky top-16" id="side">
+		<div class="hidden md:block sticky" id="side">
 			<TheTopCommunities />
 			<TheFooter />
 		</div>
@@ -155,5 +155,6 @@ section {
 
 #side {
 	height: min-content;
+	top: 4.5rem;
 }
 </style>

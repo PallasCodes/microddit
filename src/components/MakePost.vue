@@ -1,17 +1,20 @@
 <template>
 	<div class="card mb-4 flex w-full">
 		<div class="w-12 h-12 rounded-full overflow-hidden mr-2">
-			<img :src="$store.getters.profileImage" />
+			<img :src="$store.getters.profileImage" class="object-cover full-w h-12" />
 		</div>
 		<form @submit.prevent="createPost()" class="w-full text-gray-700">
 			<input type="text" class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-200 mb-2" placeholder="Título" v-model="title">
 			<textarea class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-200 resize-none" rows="3" placeholder="Publicar algo..." v-model="postText" ref="textarea"></textarea>
 			<div class="flex justify-between items-end mt-2">
-				<input type="file" hidden="true" ref="image" accept=".png, .jpg, .jpeg">
-				<span @click="chooseFile()">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 cursor-pointer self-end" viewBox="0 0 20 20" fill="currentColor" v-if="imageChoosen">
-						<path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+				<input type="file" hidden="true" ref="image" accept=".png, .jpg, .jpeg" @change="setImage">
+				<div v-if="image" class="w-40 flex relative text-gray-200 hover:text-red-900 cursor-pointer" @click="unselectImage">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute top-0 right-0 mt-1 mr-1" viewBox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
 					</svg>
+					<img :src="imageChoosen" class="w-full object-cover h-auto selected-img">
+				</div>
+				<span @click="chooseFile()">
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="!imageChoosen">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
 					</svg>
@@ -23,6 +26,7 @@
 					<span>Publicar</span>
 				</button>
 			</div>
+			<p v-if="!validTitle && !validPostText" class="mt-4">*Debes introducir un título y texto en tu publicación</p>
 		</form>
 	</div>
 </template>
@@ -49,20 +53,31 @@ export default {
 		async createPost() {
 			if (this.validateForm()) {
 
-				let post = {
-					title: this.title,
-					post_text: this.postText
-				}
+				let formData = new FormData()
+
+				formData.append('title', this.title)
+				formData.append('post_text', this.postText)
 
 				if (this.communitie) {
-					post.communitie = this.communitie
+					formData.append('communitie', this.communitie)
+				}
+
+				if (this.$refs.image) {
+					formData.append('image', this.$refs.image.files[0])
 				}
 
 				await axios
-					.post('api/v1/posts/', post)
+					.post('api/v1/posts/', formData, {
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
+					})
 					.then(res => {
 						this.title = ''
 						this.postText = ''
+						this.$refs.image.type = ''
+						this.$refs.image.type = 'file'
+						this.image = null
 						this.$emit('post-created', res.data)
 						createToast('Publicación creada', {
 							type: 'info',
@@ -96,17 +111,34 @@ export default {
 		},
 		chooseFile() {
 			this.$refs.image.click()
-			this.image = true
 		},
+		setImage() {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(this.$refs.image.files[0]);
+
+			const that = this
+
+			fileReader.addEventListener("load", function() {
+				that.image = this.result
+			});
+		},
+		unselectImage() {
+			this.image = null
+			this.$refs.image.type = ''
+			this.$refs.image.type = 'file'
+		}
 	},
 	computed: {
 		imageChoosen() {
 			return this.image
-		}
+		},
 	}
 }
 </script>
 
-<style>
-
+<style scoped>
+.selected-img:hover {
+	filter: opacity(70%);
+	transition: all 200ms ease-in;
+}
 </style>

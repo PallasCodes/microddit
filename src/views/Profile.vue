@@ -36,7 +36,7 @@
 			<MakePost v-if="isAuthenticated && isOwnProfile" @post-created="addPost" />
 			<Post v-for="post in posts" :key="post.id" :post="post" />
 		</main>
-		<div class="hidden md:block sticky top-16 side">
+		<div class="hidden md:block sticky side">
 			<TheTopCommunities />
 			<TheFooter />
 		</div>
@@ -198,6 +198,7 @@ export default {
 <style scoped>
 .side {
 	height: min-content;
+	top: 4.5rem;
 }
 
 .profile {

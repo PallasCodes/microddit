@@ -13,7 +13,7 @@
         <img src="/assets/img/spinner.gif" class="my-4 mx-auto">
       </div>
     </main>
-    <div class="hidden md:block sticky top-16" id="side">
+    <div class="hidden md:block sticky" id="side">
       <TheTopCommunities />
       <TheFooter />
     </div>
@@ -109,6 +109,7 @@ export default {
 <style scoped>
 #side {
   height: min-content;
+  top: 4.5rem;
 }
 
 #feed {
