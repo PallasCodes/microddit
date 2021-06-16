@@ -90,12 +90,11 @@ export default {
               let users = []
               res.data.forEach(user => users.push(user.id))
               this.$store.commit('setFollowedUsers', users)
-              console.log(this.$store.getters.followedUsers)
             })
             .catch(error => console.error(error))
 
           await axios
-            .get(`api/v1/communities/joined/${this.$store.getters.username}`)
+            .get(`api/v1/communities/joined/${this.$store.getters.username}/`)
             .then(res => {
               this.$store.commit('setCommunities', res.data)
             })

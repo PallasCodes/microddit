@@ -3,11 +3,11 @@
 		<main class="w-full" @scroll="loadPosts">
 			<section class="bg-white rounded shadow overflow-hidden mb-4">
 				<div class="bg-gray-100 h-56 overflow-hidden">
-					<img :src="user.get_cover_image">
+					<img :src="user.get_cover_image" class="w-full object-cover min-h-full">
 				</div>
 				<div class="p-4">
 					<div class="w-16 h-16 rounded overflow-hidden profile-img">
-						<img :src="user.get_profile_image" alt="avatar" class="obj-cover w-full" />
+						<img :src="user.get_profile_image" alt="avatar" class="object-cover w-full h-full" />
 					</div>
 					<div class="flex justify-between">
 						<div>
@@ -51,14 +51,22 @@
 		</template>
 
 		<template v-slot:body>
-			<form @submit.prevent="">
+			<form @submit.prevent="" ref="form">
 				<div class="mb-4">
 					<label for="username" class="block">Nombre</label>
-					<input type="text" name="username" class="input" v-model="name" />
+					<input type="text" name="name" class="input" v-model="name" />
 				</div>
 				<div class="mb-4">
 					<label for="password" class="block">Descripción de perfil</label>
-					<textarea type="password" name="password" class="input resize-none" v-model="bioDescription"></textarea>
+					<textarea name="bioDescription" class="input resize-none" v-model="bioDescription" rows="2"></textarea>
+				</div>
+				<div class="mb-4">
+					<label for="profile-img" class="block">Foto de perfil</label>
+					<input type="file" name="profileImg" class="input" accept=".png, .jpg, .jpeg">
+				</div>
+				<div class="mb-4">
+					<label for="cover-img" class="block">Foto de portada</label>
+					<input type="file" name="coverImg" class="input">
 				</div>
 			</form>
 		</template>
@@ -117,6 +125,8 @@ export default {
 	watch: {
 		$route(route) {
 			this.getUser(route)
+			this.posts = []
+			this.pageNumber = 0
 			this.getCommunities(route)
 			this.getPosts(route)
 			this.loadPosts(route)
@@ -153,15 +163,43 @@ export default {
 			this.posts = this.posts.filter(post => post.id !== postId)
 		},
 		async updateProfile() {
+			let formData = new FormData()
+			const form = this.$refs.form
+
+			formData.append('name', form.name.value)
+			formData.append('bio_description', form.bioDescription.value)
+
+			if (form.profileImg) {
+				formData.append('profile_image', form.profileImg.files[0])
+			}
+
+			if (form.coverImg) {
+				formData.append('cover_image', form.coverImg.files[0])
+			}
+
 			await axios
-				.put('api/v1/user/update/', {
-					name: this.name,
-					bio_description: this.bioDescription
+				.put('api/v1/user/update/', formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data'
+					}
 				})
-				.then(() => {
+				.then(res => {
+					this.user = res.data
 					this.closeModal()
+					createToast('Perfil actualizado', {
+						type: 'info',
+						hideProgressBar: 'true',
+						position: 'bottom-right',
+					})
 				})
-				.catch(error => console.error(error))
+				.catch(error => {
+					console.error(error)
+					createToast('Error al actualizar perfil. Inténtelo más tarde', {
+						type: 'danger',
+						hideProgressBar: 'true',
+						position: 'bottom-right',
+					})
+				})
 		},
 		showModal() {
 			this.isModalVisible = true;

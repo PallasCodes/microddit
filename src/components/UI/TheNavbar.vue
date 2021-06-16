@@ -45,7 +45,7 @@
         </div>
         <router-link :to="`/user/${getUsername}`" class="flex ml-6">
           <div class="w-10 h-10 rounded overflow-hidden mr-2">
-            <img :src="profileImage" alt="avatar" />
+            <img :src="profileImage" alt="avatar" class="object-cover w-full h-full" />
           </div>
           <div>
             <span class="
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: "TheNavbar",
   data() {
@@ -89,11 +91,16 @@ export default {
       this.$store.commit("logout");
       localStorage.removeItem("token");
       this.$router.push("/");
+      axios.defaults.headers.common['Authorization'] = ''
+      this.$store.commit('setUsername', '')
     },
     search() {
       this.$router.push(`/search/${this.query}`)
     }
   },
+  update() {
+    console.log(this.$route)
+  }
 };
 </script>
 

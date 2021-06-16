@@ -46,6 +46,14 @@ export default {
       isLoading: false
     }
   },
+  watch: {
+    isAuthenticated() {
+      this.posts = []
+      this.getPosts()
+      this.pageNumber = 1
+      this.loadPosts()
+    }
+  },
   mounted() {
     this.getPosts()
 

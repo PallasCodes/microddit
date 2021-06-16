@@ -84,6 +84,8 @@ export default {
 	},
 	watch: {
 		$route(route) {
+			this.posts = []
+			this.pageNumber = 1
 			this.getCommunitie(route)
 			this.getPosts()
 
