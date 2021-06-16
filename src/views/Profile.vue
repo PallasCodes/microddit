@@ -1,6 +1,6 @@
 <template>
 	<div class="flex gap-4 py-4 profile">
-		<main class="w-full">
+		<main class="w-full" @scroll="loadPosts">
 			<section class="bg-white rounded shadow overflow-hidden mb-4">
 				<div class="bg-gray-100 h-56 overflow-hidden">
 					<img :src="user.get_cover_image">
@@ -33,8 +33,11 @@
 					</div>
 				</div>
 			</section>
-			<MakePost v-if="isAuthenticated && isOwnProfile" @post-created="addPost" />
+			<MakePost v-if="isAuthenticated && isOwnProfile" @post-created="addPost" @delete-post="removePost" />
 			<Post v-for="post in posts" :key="post.id" :post="post" />
+			<div v-if="isLoading">
+				<img src="/assets/img/spinner.gif" class="my-4 mx-auto">
+			</div>
 		</main>
 		<div class="hidden md:block sticky side">
 			<TheTopCommunities />
@@ -94,7 +97,10 @@ export default {
 			followed: false,
 			isModalVisible: false,
 			name: '',
-			bioDescription: ''
+			bioDescription: '',
+			pageNumber: 1,
+			noMorePosts: false,
+			isLoading: false
 		}
 	},
 	computed: {
@@ -108,7 +114,44 @@ export default {
 			return this.followed
 		}
 	},
+	watch: {
+		$route(route) {
+			this.getUser(route)
+			this.getCommunities(route)
+			this.getPosts(route)
+			this.loadPosts(route)
+		}
+	},
 	methods: {
+		loadPosts(route) {
+			window.onscroll = () => {
+				let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight === document.documentElement.offsetHeight
+
+				if (bottomOfWindow && !this.noMorePosts) {
+					this.pageNumber = this.pageNumber + 1
+					this.isLoading = true
+
+					axios(`/api/v1/posts/user/${route.params.username}/?page=${this.pageNumber}`)
+						.then(res => {
+							res.data.forEach(post => {
+								this.posts.push(post)
+							})
+							this.isLoading = false
+						})
+						.catch(error => {
+							this.isLoading = false
+							if (error.response.data.detail === 'Invalid page.') {
+								this.noMorePosts = true
+							} else {
+								console.error(error)
+							}
+						})
+				}
+			}
+		},
+		removePost(postId) {
+			this.posts = this.posts.filter(post => post.id !== postId)
+		},
 		async updateProfile() {
 			await axios
 				.put('api/v1/user/update/', {
@@ -126,9 +169,9 @@ export default {
 		closeModal() {
 			this.isModalVisible = false;
 		},
-		async getPosts() {
+		async getPosts(route) {
 			await axios
-				.get(`api/v1/posts/user/${this.$route.params.username}/`)
+				.get(`api/v1/posts/user/${route.params.username}/`)
 				.then(res => {
 					this.posts = res.data
 				})
@@ -137,9 +180,9 @@ export default {
 		addPost(post) {
 			this.posts.unshift(post)
 		},
-		async getUser() {
+		async getUser(route) {
 			await axios
-				.get(`api/v1/user/${this.$route.params.username}/`)
+				.get(`api/v1/user/${route.params.username}/`)
 				.then(res => {
 					this.user = res.data
 					this.name = res.data.name
@@ -159,9 +202,9 @@ export default {
 				})
 				.catch(error => console.error(error))
 		},
-		async getCommunities() {
+		async getCommunities(route) {
 			await axios
-				.get(`api/v1/communities/joined/${this.$route.params.username}/`)
+				.get(`api/v1/communities/joined/${route.params.username}/`)
 				.then(res => {
 					this.communities = res.data
 				})
@@ -187,10 +230,13 @@ export default {
 			}
 		},
 	},
-	async mounted() {
-		await this.getUser()
-		await this.getCommunities()
-		await this.getPosts()
+	async created() {
+		const route = this.$route
+
+		await this.getUser(route)
+		await this.getCommunities(route)
+		await this.getPosts(route)
+		this.loadPosts(route)
 	}
 }
 </script>

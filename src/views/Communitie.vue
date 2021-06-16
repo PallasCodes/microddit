@@ -14,10 +14,16 @@
 		</div>
 	</header>
 
-	<section class="flex gap-4 py-4 communitie">
+	<section class="flex gap-4 py-4 communitie" @scroll="loadPosts">
 		<main class="w-full">
-			<MakePost v-if="isAuthenticated" @post-created="addPost" :communitie="communitie.id" />
-			<Post v-for="post in posts" :key="post.id" :post="post" />
+			<MakePost v-if="isAuthenticated" @post-created="addPost" :communitie="communitie.id" :notJoined="!isJoined" />
+			<Post v-for="post in posts" :key="post.id" :post="post" @delete-post="removePost" />
+			<p v-if="noMorePosts" class="font-bold text-gray-900 py-4 text-center">
+				No hay más publicaciones que mostrar.
+			</p>
+			<div v-if="isLoading">
+				<img src="/assets/img/spinner.gif" class="my-4 mx-auto">
+			</div>
 		</main>
 		<div class="hidden md:block sticky" id="side">
 			<TheTopCommunities />
@@ -49,11 +55,16 @@ export default {
 		return {
 			communitie: {},
 			posts: [],
-			joined: false
+			joined: false,
+			pageNumber: 1,
+			noMorePosts: false,
+			isLoading: false
 		}
 	},
 	async created() {
-		await this.getCommunitie()
+		const route = this.$route
+
+		await this.getCommunitie(route)
 		await this.getPosts()
 
 		window.document.title = this.communitie.name + ' | Microddit'
@@ -68,11 +79,63 @@ export default {
 				}
 			})
 		}
+
+		this.loadPosts()
+	},
+	watch: {
+		$route(route) {
+			this.getCommunitie(route)
+			this.getPosts()
+
+			window.document.title = this.communitie.name + ' | Microddit'
+
+			const communities = this.$store.getters.communities
+			const that = this
+
+			if (this.isAuthenticated) {
+				communities.forEach(communitie => {
+					if (communitie.id === this.communitie.id) {
+						that.joined = true
+					}
+				})
+			}
+
+			this.loadPosts()
+		}
 	},
 	methods: {
-		async getCommunitie() {
+		loadPosts() {
+			window.onscroll = () => {
+				let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight === document.documentElement.offsetHeight
+
+				if (bottomOfWindow && !this.noMorePosts) {
+					this.pageNumber = this.pageNumber + 1
+					this.isLoading = true
+
+					axios(`/api/v1/posts/${this.communitie.id}/?page=${this.pageNumber}`)
+						.then(res => {
+							res.data.forEach(post => {
+								this.posts.push(post)
+							})
+							this.isLoading = false
+						})
+						.catch(error => {
+							this.isLoading = false
+							if (error.response.data.detail === 'Invalid page.') {
+								this.noMorePosts = true
+							} else {
+								console.error(error)
+							}
+						})
+				}
+			}
+		},
+		removePost(postId) {
+			this.posts = this.posts.filter(post => post.id !== postId)
+		},
+		async getCommunitie(route) {
 			await axios
-				.get('api/v1/communities/' + this.$route.params.category + '/' + this.$route.params.communitie)
+				.get('api/v1/communities/' + route.params.category + '/' + route.params.communitie)
 				.then(res => {
 					this.communitie = res.data
 				})

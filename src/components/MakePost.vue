@@ -38,7 +38,7 @@ import 'mosha-vue-toastify/dist/style.css'
 
 export default {
 	name: 'MakePost',
-	props: ['communitie', 'communitieJoined'],
+	props: ['communitie', 'notJoined'],
 	data() {
 		return {
 			image: null,
@@ -51,48 +51,56 @@ export default {
 	emits: ['post-created'],
 	methods: {
 		async createPost() {
-			if (this.validateForm()) {
+			if (this.notJoined) {
+				createToast('Debes ser miembro para poder publicar', {
+					type: 'warning',
+					hideProgressBar: 'true',
+					position: 'bottom-right',
+				})
+			} else {
+				if (this.validateForm()) {
 
-				let formData = new FormData()
+					let formData = new FormData()
 
-				formData.append('title', this.title)
-				formData.append('post_text', this.postText)
+					formData.append('title', this.title)
+					formData.append('post_text', this.postText)
 
-				if (this.communitie) {
-					formData.append('communitie', this.communitie)
-				}
+					if (this.communitie) {
+						formData.append('communitie', this.communitie)
+					}
 
-				if (this.$refs.image) {
-					formData.append('image', this.$refs.image.files[0])
-				}
+					if (this.$refs.image) {
+						formData.append('image', this.$refs.image.files[0])
+					}
 
-				await axios
-					.post('api/v1/posts/', formData, {
-						headers: {
-							'Content-Type': 'multipart/form-data'
-						}
-					})
-					.then(res => {
-						this.title = ''
-						this.postText = ''
-						this.$refs.image.type = ''
-						this.$refs.image.type = 'file'
-						this.image = null
-						this.$emit('post-created', res.data)
-						createToast('Publicación creada', {
-							type: 'info',
-							hideProgressBar: 'true',
-							position: 'bottom-right',
+					await axios
+						.post('api/v1/posts/', formData, {
+							headers: {
+								'Content-Type': 'multipart/form-data'
+							}
 						})
-					})
-					.catch(error => {
-						console.error(error)
-						createToast('Error al publicar. Inténtalo más tarde', {
-							type: 'danger',
-							hideProgressBar: 'true',
-							position: 'bottom-right',
+						.then(res => {
+							this.title = ''
+							this.postText = ''
+							this.$refs.image.type = ''
+							this.$refs.image.type = 'file'
+							this.image = null
+							this.$emit('post-created', res.data)
+							createToast('Publicación creada', {
+								type: 'info',
+								hideProgressBar: 'true',
+								position: 'bottom-right',
+							})
 						})
-					})
+						.catch(error => {
+							console.error(error)
+							createToast('Error al publicar. Inténtalo más tarde', {
+								type: 'danger',
+								hideProgressBar: 'true',
+								position: 'bottom-right',
+							})
+						})
+				}
 			}
 		},
 		validateForm() {

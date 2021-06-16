@@ -79,30 +79,37 @@ export default {
 			return this.splicedPosts()
 		}
 	},
+	watch: {
+		$route(route) {
+			this.searchPosts(route)
+			this.searchCommunities(route)
+			this.searchUsers(route)
+		}
+	},
 	methods: {
 		splicedPosts() {
 			return this.posts.splice(0, 5)
 		},
-		async searchPosts() {
+		async searchPosts(route) {
 			await axios
-				.get(`api/v1/posts/search/${this.$route.params.query}/`)
+				.get(`api/v1/posts/search/${route.params.query}/`)
 				.then(res => {
 					this.posts = res.data
 				})
 				.catch(error => console.error(error))
 		},
-		async searchCommunities() {
+		async searchCommunities(route) {
 			await axios
-				.get(`api/v1/communities/search/${this.$route.params.query}/`)
+				.get(`api/v1/communities/search/${route.params.query}/`)
 				.then(res => {
 					this.communities = res.data
 					console.log(res.data)
 				})
 				.catch(error => console.error(error))
 		},
-		async searchUsers() {
+		async searchUsers(route) {
 			await axios
-				.get(`api/v1/user/search/${this.$route.params.query}/`)
+				.get(`api/v1/user/search/${route.params.query}/`)
 				.then(res => {
 					console.log(res.data)
 					this.users = res.data
@@ -110,10 +117,12 @@ export default {
 				.catch(error => console.error(error))
 		}
 	},
-	async mounted() {
-		await this.searchPosts()
-		await this.searchCommunities()
-		await this.searchUsers()
+	async created() {
+		const route = this.$route
+
+		await this.searchPosts(route)
+		await this.searchCommunities(route)
+		await this.searchUsers(route)
 	}
 }
 </script>
