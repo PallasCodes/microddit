@@ -1,5 +1,5 @@
 <template>
-	<div class="py-2 flex">
+	<div class="py-2 flex comment w-full">
 		<router-link :to="`/user/${comment.get_user}`">
 			<div class="w-6 h-6 rounded-full overflow-hidden mr-2">
 				<img :src="comment.get_user_image" alt="User profile image" class="object-cover w-full h-6" />
@@ -10,7 +10,7 @@
 				<span class="font-bold ">@{{ comment.get_user }}</span>
 			</router-link>
 			<span> el {{ getDate(comment.date) }}</span>
-			<span class="block text-black text-base mt-1">{{ comment.comment }}</span>
+			<span class="block text mt-1 comment w-full">{{ comment.comment }}</span>
 		</div>
 	</div>
 </template>a
@@ -43,6 +43,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.comment {
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	max-width: 100%;
+	overflow-x: clip;
+}
 </style>

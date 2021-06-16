@@ -1,9 +1,9 @@
 <template>
 	<header class="bg-white mb-4">
 		<div class="top-header h-72 overflow-hidden">
-			<img :src="communitie.get_image" class="obj-cover h-auto w-full" />
+			<img :src="communitie.get_image" class="object-cover min-h-full w-full" />
 		</div>
-		<div class="bottom-header flex justify-center flex-col py-4">
+		<div class="bottom-header flex justify-center flex-col py-4 px-4 md:px-0">
 			<div class="flex justify-between">
 				<h1 class="font-bold text-gray-800 text-3xl">{{ communitie.name }}</h1>
 				<button class="btn text-sm" :class="isJoinedClass" @click="joinOrLeave"> {{ isJoined ? 'Abandonar' : 'Unirme' }} </button>
@@ -14,7 +14,7 @@
 		</div>
 	</header>
 
-	<section class="flex gap-4 py-4 communitie" @scroll="loadPosts">
+	<section class="flex gap-4 mb-12 mx-auto md:py-4 communitie md:mb-0" @scroll="loadPosts">
 		<main class="w-full">
 			<MakePost v-if="isAuthenticated" @post-created="addPost" :communitie="communitie.id" :notJoined="!isJoined" />
 			<Post v-for="post in posts" :key="post.id" :post="post" @delete-post="removePost" />
@@ -215,7 +215,6 @@ export default {
 
 section {
 	max-width: 1100px;
-	margin: 0 auto;
 }
 
 #side {

@@ -1,7 +1,7 @@
 <template>
 	<section id="search">
 		<h2 class="py-6 font-bold text-3xl text-gray-800">Resultados para: {{ $route.params.query }}</h2>
-		<section class="bg-white rounded shadow mb-4">
+		<section class="bg-white rounded shadow mb-16 md:mb-4">
 			<div>
 				<h3 class="text-xl font-bold text-gray-700 mb-2 p-4 pb-0">Publicaciones</h3>
 				<p v-if="getPosts.length === 0" class="px-4">Publicaciones no encontradas</p>

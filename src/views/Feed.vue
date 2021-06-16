@@ -1,5 +1,5 @@
 <template>
-  <div id="feed" class="flex gap-4 py-4" @scroll="loadPosts">
+  <div id="feed" class="flex gap-4 py-4 mx-auto mb-12 md:mb-0" @scroll="loadPosts">
     <main class="w-full">
       <MakePost v-if="isAuthenticated" @post-created="addPost" />
       <Post v-for="post in computedPosts" :key="post.id" :post="post" @delete-post="removePost" />
@@ -121,6 +121,5 @@ export default {
 
 #feed {
   max-width: 1100px;
-  margin: 0 auto;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="flex gap-4 py-4 post">
+	<div class="flex gap-4 py-4 post mx-auto mb-12 md:mb-0">
 		<main class="w-full">
 			<Post :post="getPost" :key="post.id" fullText="true" />
 			<span class="mb-4 block"></span>
@@ -81,6 +81,5 @@ export default {
 
 .post {
 	max-width: 1100px;
-	margin: 0 auto;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div id="communities" class="py-4">
 		<h2 class="text-3xl font-bold text-gray-800 mb-6 mt-2">Comunidades</h2>
-		<section class="flex w-full">
+		<section class="flex w-full flex-col md:flex-row">
 			<nav class="card mr-4 overflow-hidden" id="communities-nav">
 				<div class="px-3 py-2 bg-indigo-50 font-bold text-gray-700">
 					Categorías

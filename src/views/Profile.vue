@@ -1,5 +1,5 @@
 <template>
-	<div class="flex gap-4 py-4 profile">
+	<div class="flex gap-4 mb-12 mx-auto md:py-4 profile md:mb-0">
 		<main class="w-full" @scroll="loadPosts">
 			<section class="bg-white rounded shadow overflow-hidden mb-4">
 				<div class="bg-gray-100 h-56 overflow-hidden">
@@ -287,7 +287,6 @@ export default {
 
 .profile {
 	max-width: 1100px;
-	margin: 0 auto;
 }
 
 .btn {
