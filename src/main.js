@@ -5,6 +5,9 @@ import store from "./store";
 import "./assets/tailwind.css";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://0.0.0.0:8000";
+const local = "http://localhost:8000"
+// const production = ' '
+
+axios.defaults.baseURL = local
 
 createApp(App).use(store).use(router, axios).mount("#app");
