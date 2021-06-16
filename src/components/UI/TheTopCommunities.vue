@@ -46,7 +46,6 @@ export default {
     await axios
       .get('api/v1/communities/top/')
       .then(res => {
-        console.log(res.data)
         this.communities = res.data
       })
       .catch(error => console.error(error))

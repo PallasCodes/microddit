@@ -8,7 +8,7 @@
 				<div v-for="post in getPosts" :key="post.id">
 					<router-link class="px-4 py-2 flex items-center hover:bg-blue-50 cursor-pointer transition duration-150 ease" :to="`/post/${post.id}`">
 						<div class="w-10 h-10 rounded-full overflow-hidden mr-2">
-							<img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-10" />
+							<img :src="post.get_user_image" alt="Profile user image" class="object-cover w-full h-10" />
 						</div>
 						<div>
 							<span class="block font-bold text-gray-700 text-lg">{{ post.title }}</span>
@@ -27,7 +27,7 @@
 				<div v-for="communitie in communities" :key="communitie.id">
 					<router-link class="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer transition duration-150 ease" :to="`/communitie${communitie.get_absolute_url}`">
 						<div class="w-10 h-10 rounded-full overflow-hidden mr-2">
-							<img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-10" />
+							<img :src="communitie.get_image" alt="Image photo" class="object-cover w-full h-10" />
 						</div>
 						<div>
 							<span class="block font-bold text-gray-700 text-lg">{{ communitie.name }}</span>
@@ -46,7 +46,7 @@
 				<div v-for="user in users" :key="user.id">
 					<router-link class="px-4 py-2 flex items-center hover:bg-gray-100 cursor-pointer transition duration-150 ease" :to="`/user/${user.get_username}`">
 						<div class="w-10 h-10 rounded-full overflow-hidden mr-2">
-							<img src="https://monterreyrock.com/wp-content/uploads/2015/03/stevie-ray-vaughan-1.jpg" alt="" class="object-cover w-full h-10" />
+							<img :src="user.get_profile_image" alt="User profile image" class="object-cover w-full h-10" />
 						</div>
 						<div>
 							<span class="block font-bold text-gray-700 text-lg">{{ user.name }}</span>

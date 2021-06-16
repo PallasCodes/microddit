@@ -38,7 +38,7 @@ import 'mosha-vue-toastify/dist/style.css'
 
 export default {
 	name: 'MakePost',
-	props: ['communitie'],
+	props: ['communitie', 'communitieJoined'],
 	data() {
 		return {
 			image: null,
