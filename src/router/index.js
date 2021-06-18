@@ -9,6 +9,7 @@ import Communitie from "../views/Communitie.vue";
 import FullPost from "../views/FullPost.vue";
 import Profile from "../views/Profile.vue";
 import Search from "../views/Search.vue";
+import NotFound from "../views/NotFound.vue";
 
 const routes = [{
     path: "/",
@@ -56,6 +57,7 @@ const routes = [{
     name: "Search",
     component: Search,
   },
+  { path: '/:notFound(.*)', component: NotFound }
 ];
 
 const router = createRouter({

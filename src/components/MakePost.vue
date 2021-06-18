@@ -1,7 +1,10 @@
 <template>
-	<div class="card mb-4 flex w-full">
+	<div class="card mb-4 flex w-full relative">
+		<div v-if="isLoading" class="absolute w-full h-full mx-center top-0 left-0 opacity-40" style="background-color: #f1f1f1;">
+			<img src="/assets/img/spinner.gif" class="my-4 mx-auto">
+		</div>
 		<div class="w-12 h-12 rounded-full overflow-hidden mr-2">
-			<img :src="$store.getters.profileImage" class="object-cover full-w h-12" />
+			<img :src="$store.getters.profileImage" class="object-cover full-w h-full" />
 		</div>
 		<form @submit.prevent="createPost()" class="w-full text-gray-700">
 			<input type="text" class="w-full rounded outline-none bg-gray-50 p-1 border border-gray-200 mb-2" placeholder="Título" v-model="title">
@@ -46,6 +49,7 @@ export default {
 			postText: '',
 			validTitle: true,
 			validPostText: true,
+			isLoading: false
 		}
 	},
 	emits: ['post-created'],
@@ -59,6 +63,8 @@ export default {
 				})
 			} else {
 				if (this.validateForm()) {
+
+					this.isLoading = true
 
 					let formData = new FormData()
 
@@ -86,6 +92,7 @@ export default {
 							this.$refs.image.type = 'file'
 							this.image = null
 							this.$emit('post-created', res.data)
+							this.isLoading = false
 							createToast('Publicación creada', {
 								type: 'info',
 								hideProgressBar: 'true',

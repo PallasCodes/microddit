@@ -58,7 +58,7 @@ export default {
 			joined: false,
 			pageNumber: 1,
 			noMorePosts: false,
-			isLoading: false
+			isLoading: true
 		}
 	},
 	async created() {

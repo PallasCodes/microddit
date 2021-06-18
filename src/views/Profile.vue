@@ -34,7 +34,7 @@
 				</div>
 			</section>
 			<MakePost v-if="isAuthenticated && isOwnProfile" @post-created="addPost" @delete-post="removePost" />
-			<Post v-for="post in posts" :key="post.id" :post="post" />
+			<Post v-for="post in posts" :key="post.id" :post="post" @delete-post="removePost" />
 			<div v-if="isLoading">
 				<img src="/assets/img/spinner.gif" class="my-4 mx-auto">
 			</div>
@@ -108,7 +108,7 @@ export default {
 			bioDescription: '',
 			pageNumber: 1,
 			noMorePosts: false,
-			isLoading: false
+			isLoading: true
 		}
 	},
 	computed: {
@@ -133,6 +133,9 @@ export default {
 		}
 	},
 	methods: {
+		removePost(postId) {
+			this.posts = this.posts.filter(post => post.id !== postId)
+		},
 		loadPosts(route) {
 			window.onscroll = () => {
 				let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight === document.documentElement.offsetHeight

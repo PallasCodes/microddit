@@ -64,3 +64,11 @@ button {
 .input {
   @apply border border-gray-300 p-1 rounded-md text-sm text-gray-700 w-full focus:border-blue-600 outline-none transition duration-200 ease-in-out;
 }
+
+/* -------- Toasts ------- */
+
+@media (max-width:  767px) {
+  .mosha__toast {
+    margin-bottom: 2.35rem;
+  } 
+}

@@ -32,7 +32,7 @@
 						<div>
 							<span class="block font-bold text-gray-700 text-lg">{{ communitie.name }}</span>
 							<span class="block text-sm">
-								33 miembros
+								{{ communitie.num_members }} miembros
 							</span>
 						</div>
 					</router-link>

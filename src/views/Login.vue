@@ -1,16 +1,16 @@
 <template>
-  <section class="card max-w-md mx-auto mt-10">
-    <h2 class="font-bold text-2xl text-center text-gray-800 mb-10">
+  <section class="card max-w-md mx-auto mt-4 md:mt-10">
+    <h2 class="font-bold text-2xl text-center text-gray-800 mb-6 md:mb-10">
       Inicio de sesión
     </h2>
     <form @submit.prevent="login" class="px-4" autocomplete="off">
       <div class="mb-4">
         <label for="username" class="block">Nombre de usuario</label>
-        <input type="text" name="username" class="input" v-model="username" />
+        <input type="text" name="username" class="input" v-model="username" autofocus ref="username" />
       </div>
       <div class="mb-4">
         <label for="password" class="block">Contraseña</label>
-        <input type="password" name="password" class="input" v-model="password" />
+        <input type="password" name="password" class="input" v-model="password" ref="password" />
       </div>
       <button class="btn btn-primary w-full mb-4">Iniciar Sesión</button>
       <p class="text-center mt-2 mb-2">{{ errorMessage }}</p>
@@ -26,8 +26,8 @@ export default {
   name: "Login",
   data() {
     return {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
       errorMessage: ''
     };
   },
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     async login() {
-      if (this.username === '' || this.errorMessage === '') {
+      if (this.username === '' || this.password === '') {
         this.errorMessage = '*Introduce tu usuario y contraseña para iniciar sesión'
       } else {
 

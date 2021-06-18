@@ -1,6 +1,6 @@
 <template>
-  <section class="card max-w-md mx-auto mt-10">
-    <h2 class="font-bold text-2xl text-center text-gray-800 mb-10">Registro</h2>
+  <section class="card max-w-md mx-auto mt-4 md:mt-10">
+    <h2 class="font-bold text-2xl text-center text-gray-800 mb-6 md:mb-10">Registro</h2>
     <form @submit.prevent="register" class="px-4" autocomplete="off" novalidate>
       <div class="mb-4">
         <label for="username" class="block">Nombre de usuario</label>
@@ -29,7 +29,9 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "axios"
+import { createToast } from 'mosha-vue-toastify'
+import 'mosha-vue-toastify/dist/style.css'
 
 export default {
   name: "Register",
@@ -83,7 +85,7 @@ export default {
       }
 
       if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.email)) {
-        this.errors.email = 'Format de correo no válido'
+        this.errors.email = 'Formato de correo no válido'
         return false
       }
 
@@ -102,12 +104,17 @@ export default {
           .then(() => {
             this.getToken()
             this.$router.push("/")
+            createToast('Registro exitoso. Ahora puedes iniciar sesión', {
+              type: 'info',
+              hideProgressBar: 'true',
+              position: 'bottom-right',
+            })
           })
           .catch(error => {
             if (error.response.data.username) {
-              this.errors.username = 'Este nombre de usuario ya está en uso o no es valido'
+              this.errors.username = 'Este nombre de usuario ya está en uso o no es válido'
             } else if (error.response.data) {
-              this.errorMessage = '*Datos no validos'
+              this.errorMessage = '*Datos no válidos'
             } else {
               console.error(error)
             }

@@ -3,6 +3,9 @@
     <main class="w-full">
       <MakePost v-if="isAuthenticated" @post-created="addPost" />
       <Post v-for="post in computedPosts" :key="post.id" :post="post" @delete-post="removePost" />
+      <p v-if="isAuthenticated && posts.length === 0" class="font-bold text-gray-900 py-4 text-center">
+        No hay publicaciones que mostrar. <br /> Considera seguir a más personas o unirte a más comunidades.
+      </p>
       <div v-if="noMorePosts" class="font-bold text-gray-900 py-4 text-center">
         <p>
           No hay más publicaciones que mostrar.
@@ -43,7 +46,7 @@ export default {
       isModalVisible: false,
       pageNumber: 1,
       noMorePosts: false,
-      isLoading: false
+      isLoading: true
     }
   },
   watch: {
@@ -60,6 +63,11 @@ export default {
     document.title = 'Microddit'
 
     this.loadPosts()
+
+    if (this.posts.length === 0) {
+      this.isLoading = false
+      this.noMorePosts = false
+    }
   },
   methods: {
     loadPosts() {
