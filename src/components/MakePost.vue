@@ -49,7 +49,7 @@ export default {
 			postText: '',
 			validTitle: true,
 			validPostText: true,
-			isLoading: false
+			isLoading: false,
 		}
 	},
 	emits: ['post-created'],
@@ -63,7 +63,6 @@ export default {
 				})
 			} else {
 				if (this.validateForm()) {
-
 					this.isLoading = true
 
 					let formData = new FormData()
@@ -75,8 +74,32 @@ export default {
 						formData.append('communitie', this.communitie)
 					}
 
-					if (this.$refs.image) {
-						formData.append('image', this.$refs.image.files[0])
+					if (this.$refs.image.value !== '') {
+						console.log('uwu')
+
+						let formDataImg = new FormData()
+						formDataImg.append('image', this.$refs.image.files[0])
+						formDataImg.append('key', '4ea6ee238b064f8be61739a05a493544')
+
+						var axiosImg = axios.create({ baseURL: 'https://api.imgbb.com/1/' })
+
+						await axiosImg
+							.post('upload', formDataImg, {
+								headers: {
+									'Content-Type': 'multipart/form-data'
+								}
+							})
+							.then(res => {
+								formData.append('image_url', res.data.image.url)
+							})
+							.catch(error => {
+								console.error(error.request.data)
+								createToast('Error al publicar. Inténtalo más tarde', {
+									type: 'danger',
+									hideProgressBar: 'true',
+									position: 'bottom-right',
+								})
+							})
 					}
 
 					await axios
@@ -91,6 +114,7 @@ export default {
 							this.$refs.image.type = ''
 							this.$refs.image.type = 'file'
 							this.image = null
+							this.imageUrl = null
 							this.$emit('post-created', res.data)
 							this.isLoading = false
 							createToast('Publicación creada', {

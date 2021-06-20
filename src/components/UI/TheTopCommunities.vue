@@ -17,7 +17,7 @@
 
     </ol>
     <div class="w-full">
-      <router-link to="/communities" class="text-blue-500 text-sm font-bold">Ver más</router-link>
+      <router-link to="/communities" class="btn btn-outline-secondary mt-2 text-center block">Ver más</router-link>
     </div>
   </aside>
 </template>

@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import "./assets/tailwind.css";
 import axios from "axios";
+import firebase from 'firebase'
 
 //const url = "http://127.0.0.1:8000"
 const url = 'https://microddit-api.herokuapp.com/'
