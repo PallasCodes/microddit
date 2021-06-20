@@ -82,6 +82,8 @@ export default {
 						formDataImg.append('key', '4ea6ee238b064f8be61739a05a493544')
 
 						var axiosImg = axios.create({ baseURL: 'https://api.imgbb.com/1/' })
+						delete axiosImg.defaults.headers.common['Authorization']
+						console.log(axiosImg.defaults.headers.common['Authorization'])
 
 						await axiosImg
 							.post('upload', formDataImg, {
@@ -90,10 +92,11 @@ export default {
 								}
 							})
 							.then(res => {
-								formData.append('image_url', res.data.image.url)
+								formData.append('image', res.data.data.image.url)
+								console.log(res.data.data.image.url)
 							})
 							.catch(error => {
-								console.error(error.request.data)
+								console.error(error)
 								createToast('Error al publicar. Inténtalo más tarde', {
 									type: 'danger',
 									hideProgressBar: 'true',
