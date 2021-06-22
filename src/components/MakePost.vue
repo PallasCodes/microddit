@@ -83,7 +83,6 @@ export default {
 
 						var axiosImg = axios.create({ baseURL: 'https://api.imgbb.com/1/' })
 						delete axiosImg.defaults.headers.common['Authorization']
-						console.log(axiosImg.defaults.headers.common['Authorization'])
 
 						await axiosImg
 							.post('upload', formDataImg, {
@@ -93,7 +92,6 @@ export default {
 							})
 							.then(res => {
 								formData.append('image', res.data.data.image.url)
-								console.log(res.data.data.image.url)
 							})
 							.catch(error => {
 								console.error(error)

@@ -45,12 +45,16 @@
 		</div>
 	</div>
 
-	<Modal v-show="isModalVisible" @close="closeModal" @send="updateProfile">
+	<Modal v-show="isModalVisible" @close="closeModal" @send="updateProfile" class="relative">
 		<template v-slot:header>
 			Editar información de perfil
 		</template>
 
 		<template v-slot:body>
+			<div v-if="requestLoading" class="absolute w-full h-full mx-center top-0 left-0 opacity-40" style="background-color: #f1f1f1;">
+				<img src="/assets/img/spinner.gif" class="my-4 mx-auto">
+			</div>
+
 			<form @submit.prevent="" ref="form">
 				<div class="mb-4">
 					<label for="username" class="block">Nombre</label>
@@ -108,7 +112,8 @@ export default {
 			bioDescription: '',
 			pageNumber: 1,
 			noMorePosts: false,
-			isLoading: true
+			isLoading: true,
+			requestLoading: false,
 		}
 	},
 	computed: {
@@ -166,18 +171,53 @@ export default {
 			this.posts = this.posts.filter(post => post.id !== postId)
 		},
 		async updateProfile() {
+			this.requestLoading = true
+
 			let formData = new FormData()
+			let formDataImg = new FormData()
+			formDataImg.append('key', '4ea6ee238b064f8be61739a05a493544')
+
 			const form = this.$refs.form
 
 			formData.append('name', form.name.value)
 			formData.append('bio_description', form.bioDescription.value)
 
-			if (form.profileImg) {
-				formData.append('profile_image', form.profileImg.files[0])
+			var axiosImgProfile = axios.create({ baseURL: 'https://api.imgbb.com/1/' })
+			delete axiosImgProfile.defaults.headers.common['Authorization']
+
+			if (form.profileImg.files[0]) {
+				formDataImg.append('image', form.profileImg.files[0])
+
+				await axiosImgProfile
+					.post('upload', formDataImg, {
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
+					})
+					.then(res => {
+						formData.append('profile_image', res.data.data.image.url)
+					})
+					.catch(error => {
+						console.error(error)
+					})
 			}
 
-			if (form.coverImg) {
-				formData.append('cover_image', form.coverImg.files[0])
+			if (form.coverImg.files[0]) {
+				formDataImg.delete('image')
+				formDataImg.append('image', form.coverImg.files[0])
+
+				await axiosImgProfile
+					.post('upload', formDataImg, {
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						}
+					})
+					.then(res => {
+						formData.append('cover_image', res.data.data.image.url)
+					})
+					.catch(error => {
+						console.error(error)
+					})
 			}
 
 			await axios
@@ -194,6 +234,7 @@ export default {
 						hideProgressBar: 'true',
 						position: 'bottom-right',
 					})
+					this.requestLoading = false
 				})
 				.catch(error => {
 					console.error(error)
