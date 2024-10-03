@@ -6,6 +6,6 @@ import "./assets/tailwind.css";
 import axios from "axios";
 
 
-axios.defaults.baseURL = 'https://microddit-api.onrender.com/'
+axios.defaults.baseURL = 'https://microddit-api.onrender.com'
 
 createApp(App).use(store).use(router, axios).mount("#app");
